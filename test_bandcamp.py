@@ -1,7 +1,10 @@
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import env
+import os
 from selenium.webdriver.common.keys import Keys
+import time
 
 
 class BandcampTest(unittest.TestCase):
@@ -9,6 +12,7 @@ class BandcampTest(unittest.TestCase):
     def setUp(self):
         """ run browser and load bandcamp page """
         chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--incognito")
 
         # Add some settings to try and reduce the overhead on opening the page
         prefs = {
@@ -16,8 +20,8 @@ class BandcampTest(unittest.TestCase):
         chrome_options.add_experimental_option("prefs", prefs)
 
         # Set driver to headless mode
-        chrome_options.add_argument("--headless")
-        self.driver = webdriver.Chrome('drivers/chromedriver.exe', options=chrome_options)
+        # chrome_options.add_argument("--headless")
+        self.driver = webdriver.Chrome('drivers/chromedriver.exe', options=chrome_options)  # , options=chrome_options)
 
         self.driver.maximize_window()
         self.driver.get('https://bandcamp.com/')
@@ -34,6 +38,20 @@ class BandcampTest(unittest.TestCase):
                              'https://daily.bandcamp.com/2019/04/10/third-man-comes-to-bandcamp-and-the-raconteurs-share-new-song/')  # assert that a link held as a chile of am element is present
             self.assertTrue(self.driver.find_element_by_css_selector('.corp-bclogo').find_element(By.TAG_NAME,
                                                                                                   "svg"))  # assert that an svg tag is there within a class
+        except AssertionError:
+            raise AssertionError
+
+    def test_login(self):
+        """ tests on log in page """
+        self.driver.find_element_by_link_text('log in').click()
+
+        try:
+            assert self.driver.title == "Log in | Bandcamp"
+            assert self.driver.current_url == "https://bandcamp.com/login"
+            self.assertTrue(self.driver.find_element_by_id('loginform'))
+            assert self.driver.find_element_by_css_selector('.forgot-password').find_element(By.TAG_NAME,
+                                                                                             "a").get_attribute(
+                'href') == 'https://bandcamp.com/forgot_password'
         except AssertionError:
             raise AssertionError
 
