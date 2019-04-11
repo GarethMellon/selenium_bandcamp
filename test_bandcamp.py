@@ -29,13 +29,16 @@ class BandcampTest(unittest.TestCase):
     def test_landing_page(self):
         """ tested on landing page to check if it is valid """
         try:
-            self.assertEqual(self.driver.title, "Bandcamp")  # assert page title matches
+            assert "Bandcamp" in self.driver.title  # assert page title matches
             assert self.driver.find_element_by_link_text('log in').get_attribute(
                 'href') == "https://bandcamp.com/login?from=home"  # assert login link is correct
-            c = self.driver.find_element_by_css_selector('.carousel-big-item').find_element(By.TAG_NAME,
-                                                                                            "a").get_attribute("href")
-            self.assertEqual(c,
-                             'https://daily.bandcamp.com/2019/04/10/third-man-comes-to-bandcamp-and-the-raconteurs-share-new-song/')  # assert that a link held as a chile of am element is present
+
+            carousel_link = self.driver.find_element_by_css_selector('.carousel-big-item').find_element(By.TAG_NAME,
+                                                                                                        "a").get_attribute(
+                "href")
+            link = 'https://daily.bandcamp.com/2019/04/10/third-man-comes-to-bandcamp-and-the-raconteurs-share-new-song/'
+            self.assertEqual(carousel_link, link)  # assert that a link held as a chile of am element is present
+
             self.assertTrue(self.driver.find_element_by_css_selector('.corp-bclogo').find_element(By.TAG_NAME,
                                                                                                   "svg"))  # assert that an svg tag is there within a class
         except AssertionError:
@@ -46,12 +49,26 @@ class BandcampTest(unittest.TestCase):
         self.driver.find_element_by_link_text('log in').click()
 
         try:
-            assert self.driver.title == "Log in | Bandcamp"
+            assert "Log in | Bandcamp" in self.driver.title
             assert self.driver.current_url == "https://bandcamp.com/login"
             self.assertTrue(self.driver.find_element_by_id('loginform'))
             assert self.driver.find_element_by_css_selector('.forgot-password').find_element(By.TAG_NAME,
                                                                                              "a").get_attribute(
                 'href') == 'https://bandcamp.com/forgot_password'
+        except AssertionError:
+            raise AssertionError
+
+    def test_genre(self):
+        genres = self.driver.find_element_by_css_selector('.discover-pills').find_elements(By.TAG_NAME, "span")
+        genres_list = ["all", "electronic", "rock", "metal", "alternative", "hip-hop/rap", "experimental", "punk",
+                       "folk", "pop", "ambient", "soundtrack", "world", "jazz", "acoustic", "funk", "r&b/soul",
+                       "devotional",
+                       "classical", "reggae", "podcasts", "country", "spoken word", "comedy", "blues", "kids",
+                       "audiobooks",
+                       "latin"]
+        try:
+            for g in genres:
+                assert g.text in genres_list
         except AssertionError:
             raise AssertionError
 
