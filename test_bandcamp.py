@@ -4,7 +4,6 @@ from selenium.webdriver.common.by import By
 import env
 import os
 from selenium.webdriver.common.keys import Keys
-import time
 
 
 class BandcampTest(unittest.TestCase):
@@ -36,8 +35,7 @@ class BandcampTest(unittest.TestCase):
             carousel_link = self.driver.find_element_by_css_selector('.carousel-big-item').find_element(By.TAG_NAME,
                                                                                                         "a").get_attribute(
                 "href")
-            link = 'https://daily.bandcamp.com/2019/04/10/third-man-comes-to-bandcamp-and-the-raconteurs-share-new-song/'
-            self.assertEqual(carousel_link, link)  # assert that a link held as a chile of am element is present
+            self.assertTrue(carousel_link)  # assert that a link held as a child of am element is present
 
             self.assertTrue(self.driver.find_element_by_css_selector('.corp-bclogo').find_element(By.TAG_NAME,
                                                                                                   "svg"))  # assert that an svg tag is there within a class
@@ -58,25 +56,33 @@ class BandcampTest(unittest.TestCase):
         except AssertionError:
             raise AssertionError
 
-    def test_genre(self):
-        """ test all the genres to ensure they are all present on the screen """
-        genres = self.driver.find_element_by_css_selector('.discover-pills').find_elements(By.TAG_NAME, "span")
+    def test_discover(self):
+        """ test all the discover to ensure they are all present on the screen """
+        genres = self.driver.find_element_by_css_selector('.discover-genres').find_elements(By.TAG_NAME, "span")
+        slices = self.driver.find_element_by_css_selector('.discover-slices').find_elements(By.TAG_NAME, "span")
+        formats = self.driver.find_element_by_css_selector('.discover-formats').find_elements(By.TAG_NAME, "span")
+
         genres_list = ["all", "electronic", "rock", "metal", "alternative", "hip-hop/rap", "experimental", "punk",
                        "folk", "pop", "ambient", "soundtrack", "world", "jazz", "acoustic", "funk", "r&b/soul",
                        "devotional",
                        "classical", "reggae", "podcasts", "country", "spoken word", "comedy", "blues", "kids",
                        "audiobooks",
                        "latin"]
+        slices_list = ["best-selling", "new arrivals", "artist-recommended"]
+        formats_list = ["any format", "digital", "vinyl", "compact disc", "cassette"]
         try:
             for g in genres:
-                assert g.text in genres_list
+                assert g.text in genres_list  # check that the genre list are correct
+            for s in slices:
+                assert s.text in slices_list  # check that the slices list are correct
+            for f in formats:
+                assert f.text in formats_list  # check that the formats list are correct
         except AssertionError:
             raise AssertionError
 
     def tearDown(self):
         """ driver tear down """
         self.driver.close()
-
 
 if __name__ == "__main__":
     unittest.main()
