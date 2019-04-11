@@ -19,8 +19,8 @@ class BandcampTest(unittest.TestCase):
         chrome_options.add_experimental_option("prefs", prefs)
 
         # Set driver to headless mode
-        # chrome_options.add_argument("--headless")
-        self.driver = webdriver.Chrome('drivers/chromedriver.exe', options=chrome_options)  # , options=chrome_options)
+        chrome_options.add_argument("--headless")
+        self.driver = webdriver.Chrome('drivers/chromedriver.exe', options=chrome_options)
 
         self.driver.maximize_window()
         self.driver.get('https://bandcamp.com/')
