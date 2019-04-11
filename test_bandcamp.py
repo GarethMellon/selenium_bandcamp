@@ -59,6 +59,7 @@ class BandcampTest(unittest.TestCase):
             raise AssertionError
 
     def test_genre(self):
+        """ test all the genres to ensure they are all present on the screen """
         genres = self.driver.find_element_by_css_selector('.discover-pills').find_elements(By.TAG_NAME, "span")
         genres_list = ["all", "electronic", "rock", "metal", "alternative", "hip-hop/rap", "experimental", "punk",
                        "folk", "pop", "ambient", "soundtrack", "world", "jazz", "acoustic", "funk", "r&b/soul",
